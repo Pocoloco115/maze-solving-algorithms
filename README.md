@@ -1,7 +1,7 @@
 # Maze Solver & Algorithms Visualizer — Unity
 
 <div align="center">
-  <img src="Media/gameplay.gif" alt="Maze Solver Preview" width="800"/>
+  <img src="Media/gameplay2.gif" alt="Maze Solver Preview" width="800"/>
 </div>
 
 <br>
