@@ -109,13 +109,11 @@ public static class AlgorithmsManager
             FinalPath = finalPath
         };
     }
-    public static PathFindingResult GetDFSExploration(Vector2Int start, Vector2Int end, HashSet<Vector2Int> floorPositions)
+    public static List<Vector2Int> GetDFSExploration(Vector2Int start, Vector2Int end, HashSet<Vector2Int> floorPositions)
     {
         Stack<Vector2Int> stack = new Stack<Vector2Int>();
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
-        Dictionary<Vector2Int, Vector2Int> parentMap = new Dictionary<Vector2Int, Vector2Int>();
         List<Vector2Int> explorationPath = new List<Vector2Int>();
-        List<Vector2Int> finalPath = new List<Vector2Int>();
         bool found = false;
         stack.Push(start);
         visited.Add(start);
@@ -134,27 +132,11 @@ public static class AlgorithmsManager
                 if (floorPositions.Contains(next) && !visited.Contains(next))
                 {
                     visited.Add(next);
-                    parentMap[next] = current;
                     stack.Push(next);
                 }
             }
         }
-        if (found)
-            {
-                Vector2Int temp = end;
-                while (temp != start)
-                {
-                    finalPath.Add(temp);
-                    temp = parentMap[temp];
-                }
-                finalPath.Add(start);
-                finalPath.Reverse();
-        }
-        return new PathFindingResult
-        {
-            ExplorationPath = explorationPath,
-            FinalPath = finalPath
-        };
+        return explorationPath;
     }
     public static PathFindingResult GetAStarExploration(Vector2Int start, Vector2Int end, HashSet<Vector2Int> floorPositions)
     {
@@ -211,6 +193,7 @@ public static class AlgorithmsManager
     private static List<Vector2Int> ReconstructPath(Dictionary<Vector2Int, Vector2Int> parentMap, Vector2Int current)
     {
         List<Vector2Int> path = new List<Vector2Int>();
+        path.Add(current);
         while (parentMap.ContainsKey(current))
         {
             current = parentMap[current];
@@ -225,4 +208,3 @@ public struct PathFindingResult
     public List<Vector2Int> ExplorationPath;
     public List<Vector2Int> FinalPath;
 }
-

@@ -15,7 +15,14 @@ public class UIHandler : MonoBehaviour
     {
         _explorationStepsText.text = $"Steps: {explorationSteps}";
         _finalStepsText.text = finalSteps.HasValue ? $"Final Steps: {finalSteps.Value}" : $"Final Steps: {explorationSteps}";
-
+    }
+    public void UpdateExplorationStepsTxt(int explorationSteps)
+    {
+        _explorationStepsText.text = $"Steps: {explorationSteps}";
+    }
+    public void UpdateFinalStepsTxt(int finalSteps)
+    {
+        _finalStepsText.text = $"Final Steps: {finalSteps}";
     }
     public void ResetUI()
     {

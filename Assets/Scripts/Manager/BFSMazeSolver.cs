@@ -18,18 +18,27 @@ public class BFSMazeSolver : MazeSolver
         Debug.Log($"Starting BFS from {start.x}, {start.y} to {end.x}, {end.y}");
         Debug.Log($"Total floor positions: {floorPositions.Count}");
         PathFindingResult exploration = AlgorithmsManager.GetBFSExploration(start, end, floorPositions);
-        foreach(var pos in exploration.ExplorationPath)
+        int stepCount = 0;
+        foreach (var pos in exploration.ExplorationPath)
         {
+            stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, null);
             Debug.Log($"Path tile colocated in {pos.x}, {pos.y}");
+            UpdateExplorationSteps(stepCount);
             yield return new WaitForSeconds(_delay);
         }
-        foreach(var pos in exploration.FinalPath)
+
+        StopTimer();
+        stepCount = 0;
+
+        foreach (var pos in exploration.FinalPath)
         {
+            stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
             Debug.Log($"Final path tile colocated in {pos.x}, {pos.y}");
+            UpdateFinalSteps(stepCount);
             yield return new WaitForSeconds(_delay);
         }
-        OnResolutionCompleted(exploration.ExplorationPath.Count, exploration.FinalPath.Count);
+        OnResolutionCompleted();
     }
 }

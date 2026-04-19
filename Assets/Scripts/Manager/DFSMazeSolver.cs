@@ -14,19 +14,28 @@ public class DFSMazeSolver : MazeSolver
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>(_mazeGenerator._floorPositions);
         Debug.Log($"Starting DFS from {start.x}, {start.y} to {end.x}, {end.y}");
         Debug.Log($"Total floor positions: {floorPositions.Count}");
-        PathFindingResult exploration = AlgorithmsManager.GetDFSExploration(start, end, floorPositions);
-        foreach(var pos in exploration.ExplorationPath)
+        List<Vector2Int> exploration = AlgorithmsManager.GetDFSExploration(start, end, floorPositions);
+        int stepCount = 0;
+        foreach (var pos in exploration)
         {
+            stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, null);
             Debug.Log($"Path tile colocated in {pos.x}, {pos.y}");
+            UpdateExplorationSteps(stepCount);
             yield return new WaitForSeconds(_delay);
         }
-        foreach(var pos in exploration.FinalPath)
+
+        StopTimer();
+        
+        stepCount = 0;
+        foreach (var pos in exploration)
         {
+            stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
             Debug.Log($"Final path tile colocated in {pos.x}, {pos.y}");
+            UpdateFinalSteps(stepCount);
             yield return new WaitForSeconds(_delay);
         }
-        OnResolutionCompleted(exploration.ExplorationPath.Count, exploration.FinalPath.Count);
+        OnResolutionCompleted();
     }
 }

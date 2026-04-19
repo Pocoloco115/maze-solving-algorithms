@@ -31,12 +31,22 @@ public abstract class MazeSolver : MonoBehaviour
         }
         return false;
     }
-    protected void OnResolutionCompleted(int explorationLenght, int? pathLenght)
+    protected void OnResolutionCompleted()
     {
         isSolving = false;
         hasFinished = true;
+    }
+    protected void StopTimer()
+    {
         _timerActive = false;
-        UIHandler.UpdateSteps(explorationLenght, pathLenght);
+    }
+    protected void UpdateExplorationSteps(int steps)
+    {
+        UIHandler.UpdateExplorationStepsTxt(steps);
+    }
+    protected void UpdateFinalSteps(int steps)
+    {
+        UIHandler.UpdateFinalStepsTxt(steps);
     }
     private void Update()
     {
