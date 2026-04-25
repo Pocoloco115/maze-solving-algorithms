@@ -11,6 +11,7 @@ public abstract class MazeSolver : MonoBehaviour
     private bool _timerActive = false;
     public static bool isSolving = false;
     public bool hasFinished = false;
+    private float _simulatedTime = 0;
     public void StartSolving()
     {
         if (isSolving || AnySolverFinished()) return;
@@ -20,6 +21,7 @@ public abstract class MazeSolver : MonoBehaviour
         Solve();
     }
     public abstract void Solve();
+    protected abstract void Skip();
     private bool AnySolverFinished()
     {
         foreach(var solver in Object.FindObjectsByType<MazeSolver>(FindObjectsSortMode.None))
@@ -30,6 +32,15 @@ public abstract class MazeSolver : MonoBehaviour
             }
         }
         return false;
+    }
+    public void SkipSolution()
+    {
+        StopTimer();
+        OnResolutionCompleted();
+    }
+    protected void AproximateTime()
+    {
+        UIHandler.UpdateTimer(null);
     }
     protected void OnResolutionCompleted()
     {

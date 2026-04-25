@@ -14,6 +14,11 @@ public class AStarMazeSolver : MazeSolver
         int stepCount = 0;
         foreach (var pos in exploration.ExplorationPath)
         {
+            if (!isSolving)
+            {
+                Skip();
+                yield break;
+            }
             stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, null);
             Debug.Log($"Path tile colocated in {pos.x}, {pos.y}");
@@ -24,10 +29,15 @@ public class AStarMazeSolver : MazeSolver
         StopTimer();
         stepCount = 0;
 
-        if (exploration.FinalPath.Count > 0)
+        if (exploration.FinalPath.Count > 0 && isSolving)
         {
             foreach(var pos in exploration.FinalPath)
             {
+                if (!isSolving)
+                {
+                    Skip();
+                    yield break;
+                }
                 stepCount++;
                 _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
                 Debug.Log($"Final path tile colocated in {pos.x}, {pos.y}");
@@ -36,6 +46,24 @@ public class AStarMazeSolver : MazeSolver
             }
         }
         OnResolutionCompleted();
+    }
+    protected override void Skip()
+    {
+        PathFindingResult exploration = AlgorithmsManager.GetAStarExploration(_mazeGenerator._start, _mazeGenerator._end, new HashSet<Vector2Int>(_mazeGenerator._floorPositions));
+        foreach(var pos in exploration.ExplorationPath)
+        {
+            _mapRenderer.PaintSinglePathTile(pos, null);
+        }
+        UpdateExplorationSteps(exploration.ExplorationPath.Count);
+        if (exploration.FinalPath.Count > 0)
+        {
+            foreach(var pos in exploration.FinalPath)
+            {
+                _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
+            }
+            UpdateFinalSteps(exploration.FinalPath.Count);
+        }
+        AproximateTime();
     }
 
 }

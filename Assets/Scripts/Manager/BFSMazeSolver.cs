@@ -21,6 +21,11 @@ public class BFSMazeSolver : MazeSolver
         int stepCount = 0;
         foreach (var pos in exploration.ExplorationPath)
         {
+            if(!isSolving)
+            {
+                Skip();
+                yield break;
+            }
             stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, null);
             Debug.Log($"Path tile colocated in {pos.x}, {pos.y}");
@@ -33,6 +38,11 @@ public class BFSMazeSolver : MazeSolver
 
         foreach (var pos in exploration.FinalPath)
         {
+            if(!isSolving)
+            {
+                Skip();
+                yield break;
+            }
             stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
             Debug.Log($"Final path tile colocated in {pos.x}, {pos.y}");
@@ -40,5 +50,21 @@ public class BFSMazeSolver : MazeSolver
             yield return new WaitForSeconds(_delay);
         }
         OnResolutionCompleted();
+    }
+    protected override void Skip()
+    {
+        HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>(_mazeGenerator._floorPositions);
+        PathFindingResult exploration = AlgorithmsManager.GetBFSExploration(_mazeGenerator._start, _mazeGenerator._end, floorPositions);
+        foreach(var pos in exploration.ExplorationPath)
+        {
+            _mapRenderer.PaintSinglePathTile(pos, null);
+        }
+        UpdateExplorationSteps(exploration.ExplorationPath.Count);
+        foreach (var pos in exploration.FinalPath)
+        {
+            _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
+        }
+        UpdateFinalSteps(exploration.FinalPath.Count);
+        AproximateTime();
     }
 }

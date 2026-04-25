@@ -18,6 +18,11 @@ public class DFSMazeSolver : MazeSolver
         int stepCount = 0;
         foreach (var pos in exploration)
         {
+            if(!isSolving)
+            {
+                Skip();
+                yield break;
+            }
             stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, null);
             Debug.Log($"Path tile colocated in {pos.x}, {pos.y}");
@@ -30,6 +35,11 @@ public class DFSMazeSolver : MazeSolver
         stepCount = 0;
         foreach (var pos in exploration)
         {
+            if(!isSolving)
+            {
+                Skip();
+                yield break;
+            }
             stepCount++;
             _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
             Debug.Log($"Final path tile colocated in {pos.x}, {pos.y}");
@@ -37,5 +47,21 @@ public class DFSMazeSolver : MazeSolver
             yield return new WaitForSeconds(_delay);
         }
         OnResolutionCompleted();
+    }
+    protected override void Skip()
+    {
+        HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>(_mazeGenerator._floorPositions);
+        List<Vector2Int> exploration = AlgorithmsManager.GetDFSExploration(_mazeGenerator._start, _mazeGenerator._end, floorPositions);
+        foreach(var pos in exploration)
+        {
+            _mapRenderer.PaintSinglePathTile(pos, null);
+        }
+        UpdateExplorationSteps(exploration.Count);
+        foreach (var pos in exploration)
+        {
+            _mapRenderer.PaintSinglePathTile(pos, Color.darkOliveGreen);
+        }
+        UpdateFinalSteps(exploration.Count);
+        AproximateTime();
     }
 }

@@ -9,6 +9,7 @@ public class MazeGenerator : MonoBehaviour
     public Vector2Int _start { get; private set; }
     public Vector2Int _end { get; private set; }
     public HashSet<Vector2Int> _floorPositions { get; private set; }
+    public int yOffset = 2;
 
     public void StartGeneration()
     {
@@ -26,7 +27,7 @@ public class MazeGenerator : MonoBehaviour
             }
         }
         BoundsInt mazeBounds = new BoundsInt(
-            new Vector3Int(-_mazeSize.x / 2, -_mazeSize.y / 2, 0),
+            new Vector3Int(-_mazeSize.x / 2, (-_mazeSize.y / 2) + yOffset, 0),
             new Vector3Int(_mazeSize.x, _mazeSize.y, 1));
 
         AlgorithmsManager.GenerateAldousBroder(mazeBounds, out var floors, out var walls);
@@ -46,6 +47,19 @@ public class MazeGenerator : MonoBehaviour
         _mapRenderer.Render(floors, walls);
         _mapRenderer.PaintSinglePathTile(_start, null);
         _mapRenderer.PaintTargetTile(_end);
+    }
+    public void SkipCurrentSolution()
+    {
+        if(MazeSolver.isSolving)
+        {
+            foreach(var solver in mazeSolvers)
+            {
+                if (!solver.hasFinished)
+                {
+                    solver.SkipSolution();
+                }
+            }
+        }
     }
     public void ClearCurrentSolution()
     {

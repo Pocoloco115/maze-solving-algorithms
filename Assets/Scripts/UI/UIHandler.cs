@@ -7,8 +7,13 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _explorationStepsText;
     [SerializeField] private TextMeshProUGUI _finalStepsText;
 
-    public void UpdateTimer(float time)
+    public void UpdateTimer(float? time)
     {
+        if (time == null)
+        {
+            _timerText.text = $"Time: Skipped";
+            return;
+        }
         _timerText.text = $"Time: {time:F2}s";
     }
     public void UpdateSteps(int explorationSteps, int? finalSteps)
